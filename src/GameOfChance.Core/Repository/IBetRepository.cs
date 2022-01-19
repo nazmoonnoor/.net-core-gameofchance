@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace GameOfChance.Core.Repository
 {
+    /// <summary>
+    /// Represents Bet repository functions
+    /// </summary>
     public interface IBetRepository
     {
         Task<Bet> CreateAsync(Bet bet, CancellationToken cancellationToken = default);

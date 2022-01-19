@@ -6,6 +6,7 @@ namespace GameOfChance.Client
 {
     public class UserManagerResponse
     {
+        public string PlayerId { get; set; }
         public string Message { get; set; }
         public string Token { get; set; } = null;
         public bool IsSuccess { get; set; }

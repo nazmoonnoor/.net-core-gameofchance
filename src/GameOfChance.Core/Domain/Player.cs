@@ -7,6 +7,10 @@ namespace GameOfChance.Core.Domain
 {
     public class Player : EntityBase, IAggregateRoot
     {
+        /// <summary>
+        /// Represents Player class object
+        /// </summary>
+        /// <param name="accountBalance"></param>
         public Player(int accountBalance = 10000)
         {
             AccountBalance = accountBalance;

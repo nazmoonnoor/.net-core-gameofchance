@@ -36,18 +36,8 @@ namespace GameOfChance.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Configure Entityframecore with SQLite
-            services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseSqlite(Configuration.GetConnectionString("SqliteConnection"));
-            });
-
-
-            // Configure Entityframecore with SQL SErver
-            //services.AddDbContext<ApplicationDbContext>(options =>
-            //{
-            //    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-            //});
+            services.ConfigureSQLite(Configuration);
+            //services.ConfigureSqlServer(Configuration);
 
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
@@ -79,7 +69,7 @@ namespace GameOfChance.Api
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Restaurant API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "GameOfChance API", Version = "v1" });
             });
 
             // Auto Mapper Configurations
@@ -104,7 +94,7 @@ namespace GameOfChance.Api
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RestaurantAPI v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GameOfChanceAPI v1"));
             }
 
             app.UseHttpsRedirection();

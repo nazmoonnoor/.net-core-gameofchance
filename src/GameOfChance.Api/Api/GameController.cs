@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Security.Claims;
@@ -34,6 +35,7 @@ namespace GameOfChance.Api
         /// <param name="id">Game bet identifier</param>
         /// <returns>If exist, it returns the bet</returns>
         [HttpGet("{id}")]
+        //[Route("{id:String}")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IList<Client.Bet>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NotFound)]
@@ -70,11 +72,16 @@ namespace GameOfChance.Api
 
             var bet = _mapper.Map<Core.Domain.Bet>(requestBet);
 
-            await _gameManager.CreateAsync(bet);
+            bet = await _gameManager.CreateAsync(bet);
+
+            if (bet is null)
+            {
+                return BadRequest(bet);
+            }
 
             var betModel = _mapper.Map<Client.Bet>(bet);
             
-            Logger.LogInformation("Bet request is successful");
+            Logger.Log(LogLevel.Information, "Bet request is successful");
 
             return CreatedAtAction(nameof(Get), new { id = bet.Id },
                 betModel.ToBetResponse());

@@ -20,7 +20,7 @@ namespace GameOfChance.Tests
         public void Setup()
         {
             var randomGenerator = new Mock<IRandomGenerator>();
-
+            
             randomGenerator
                 .Setup(c => c.Generate(It.IsAny<int>()))
                 .Returns(11);
@@ -52,9 +52,11 @@ namespace GameOfChance.Tests
                 .Setup(c => c.Generate(It.IsAny<int>()))
                 .Returns(3);
 
-            game.Player = player;
-            game.Bet = bet;
-            game = new Game(randomGenerator.Object);
+            game = new Game(randomGenerator.Object)
+            {
+                Player = player,
+                Bet = bet
+            };
 
             int initialBalance = player.AccountBalance;
 
@@ -78,9 +80,11 @@ namespace GameOfChance.Tests
                 .Setup(c => c.Generate(It.IsAny<int>()))
                 .Returns(10);
 
-            game.Player = player;
-            game.Bet = bet;
-            game = new Game(randomGenerator.Object);
+            game = new Game(randomGenerator.Object)
+            {
+                Player = player,
+                Bet = bet
+            };
 
             // ACT + ASSERT
             Assert.Throws<ArgumentOutOfRangeException>(() => game.Play(-500, 2));
@@ -103,7 +107,11 @@ namespace GameOfChance.Tests
                 .Setup(c => c.Generate(It.IsAny<int>()))
                 .Returns(3);
 
-            game = new Game(randomGenerator.Object);
+            game = new Game(randomGenerator.Object)
+            {
+                Player = player,
+                Bet = bet
+            };
 
             int initialBalance = player.AccountBalance;
 
@@ -128,7 +136,11 @@ namespace GameOfChance.Tests
                 .Setup(c => c.Generate(It.IsAny<int>()))
                 .Returns(4);
 
-            game = new Game(randomGenerator.Object);
+            game = new Game(randomGenerator.Object)
+            {
+                Player = player,
+                Bet = bet
+            };
 
             int initialBalance = player.AccountBalance;
 

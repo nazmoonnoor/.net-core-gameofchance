@@ -4,6 +4,9 @@ using System;
 
 namespace GameOfChance.Core.Domain
 {
+    /// <summary>
+    /// Represents Bet class object
+    /// </summary>
     public class Bet: EntityBase, IAggregateRoot
     {
         public Guid? PlayerId { get; set; }

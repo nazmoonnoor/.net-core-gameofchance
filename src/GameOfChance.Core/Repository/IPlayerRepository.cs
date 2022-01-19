@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace GameOfChance.Core.Repository
 {
+    /// <summary>
+    /// Represents Player repository functions
+    /// </summary>
     public interface IPlayerRepository
     {
         Task<Player> CreateAsync(Player player, CancellationToken cancellationToken = default);

@@ -53,6 +53,7 @@ namespace GameOfChance.Client.Services
             try
             {
                 var result = await userManager.CreateAsync(identityUser, model.Password);
+                var playerId = Guid.NewGuid();
 
                 if (result.Succeeded)
                 {
@@ -62,7 +63,7 @@ namespace GameOfChance.Client.Services
                         Created = DateTime.Now,
                         Email = model.Email,
                         FullName = model.Name,
-                        Id = Guid.NewGuid()
+                        Id = playerId
                     });
 
                     if (created != null)
@@ -71,12 +72,14 @@ namespace GameOfChance.Client.Services
                         {
                             Message = "User created successfully!",
                             IsSuccess = true,
+                            PlayerId = playerId.ToString()
                         };
                     }
                 }
 
                 return new UserManagerResponse
                 {
+                    PlayerId = null,
                     Message = "User did not create",
                     IsSuccess = false,
                     Errors = result.Errors.Select(e => e.Description)
@@ -91,12 +94,13 @@ namespace GameOfChance.Client.Services
         public async Task<UserManagerResponse> LoginUserAsync(LoginModel model)
         {
             var user = await userManager.FindByEmailAsync(model.Email);
+            var player = await playerRepository.GetByEmailAsync(model.Email);
 
-            if (user == null)
+            if (user == null && player == null)
             {
                 return new UserManagerResponse
                 {
-                    Message = "There is no user with that Email address",
+                    Message = "There is no user/player with that Email address",
                     IsSuccess = false,
                 };
             }
@@ -122,6 +126,7 @@ namespace GameOfChance.Client.Services
 
                 return new UserManagerResponse
                 {
+                    PlayerId = player.Id.ToString(),
                     Message = "Token generated successfully",
                     Token = token.TokenAsString,
                     IsSuccess = true,

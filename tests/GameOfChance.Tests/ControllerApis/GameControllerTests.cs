@@ -37,14 +37,23 @@ namespace GameOfChance.Tests.ControllerApis
             // Arrange
             var mockRepo = new Mock<IGameManager>();
             mockRepo.Setup(repo => repo.CreateAsync(It.IsAny<Core.Domain.Bet>()))
-                .Returns(Task.FromResult(new Core.Domain.Bet{ }));
+                .Returns(Task.FromResult(new Core.Domain.Bet{ BetPoints = 100, Number=3, Created=DateTime.Now, AdditionalBalance=100,PlayerId=Guid.NewGuid() }));
 
             var mockMapper = new Mock<IMapper>();
             mockMapper.Setup(x => x.Map<Core.Domain.Bet>(It.IsAny<Client.Bet>()))
-                .Returns(new Core.Domain.Bet{ });
+                .Returns(new Core.Domain.Bet{ BetPoints = 100, Number = 3, Created = DateTime.Now, AdditionalBalance = 100, PlayerId = Guid.NewGuid() });
+
+            mockMapper.Setup(x => x.Map<Client.Bet>(It.IsAny<Core.Domain.Bet>()))
+                .Returns(new Client.Bet { BetPoints = 100, Number = 3, AdditionalBalance = 100, PlayerId = Guid.NewGuid() });
+
 
             var mockLogger = new Mock<ILogger<GameController>>();
-            mockLogger.Setup(x => x.LogInformation(It.IsAny<string>())).Returns("FF");
+            mockLogger.Setup(x => x.Log(
+                            It.IsAny<LogLevel>(),
+                            It.IsAny<EventId>(),
+                            It.IsAny<It.IsAnyType>(),
+                            It.IsAny<Exception>(),
+                            (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()));
 
             var controller = new GameController(mockLogger.Object, mockMapper.Object, mockRepo.Object);
 
@@ -56,28 +65,42 @@ namespace GameOfChance.Tests.ControllerApis
             });
 
             // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.IsInstanceOf<CreatedAtActionResult>(result);
         }
 
         [Test]
-        public async Task WhenRegistrationPayloadIsNotOkay_ThenTheResultIsBadRequest()
+        public async Task WhenPostingWrongBetPoints_ThenTheResultIsBadRequest()
         {
             // Arrange
-            var mockRepo = new Mock<IUserManager>();
-            mockRepo.Setup(repo => repo.RegisterUserAsync(It.IsAny<RegisterModel>()))
-                .Returns(Task.FromResult(new UserManagerResponse
-                {
-                }));
+            var mockRepo = new Mock<IGameManager>();
+            mockRepo.Setup(repo => repo.CreateAsync(It.IsAny<Core.Domain.Bet>()))
+                .Returns(Task.FromResult<Core.Domain.Bet> (null));
 
-            var controller = new AuthController(mockRepo.Object);
+            var mockMapper = new Mock<IMapper>();
+            mockMapper.Setup(x => x.Map<Core.Domain.Bet>(It.IsAny<Client.Bet>()))
+                .Returns(new Core.Domain.Bet { BetPoints = 100, Number = -1, Created = DateTime.Now, AdditionalBalance = 100, PlayerId = Guid.NewGuid() });
 
-            // Act + Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(await controller.RegisterAsync(new RegisterModel
+            mockMapper.Setup(x => x.Map<Client.Bet>(It.IsAny<Core.Domain.Bet>()))
+                .Returns(new Client.Bet { BetPoints = 100, Number = -1, AdditionalBalance = 100, PlayerId = Guid.NewGuid() });
+
+            var mockLogger = new Mock<ILogger<GameController>>();
+            mockLogger.Setup(x => x.Log(
+                            It.IsAny<LogLevel>(),
+                            It.IsAny<EventId>(),
+                            It.IsAny<It.IsAnyType>(),
+                            It.IsAny<Exception>(),
+                            (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()));
+
+            var controller = new GameController(mockLogger.Object, mockMapper.Object, mockRepo.Object);
+
+            // Act
+            var result = await controller.Post(new Api.Api.Models.BetRequest
             {
-                Password = "Aa@1234",
-                ConfirmPassword = "Aa@1234",
-                Name = "Smith"
-            }));
+                
+            });
+
+            // Assert
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
 
         [OneTimeTearDown]
