@@ -12,10 +12,10 @@
 - Docker (optional)
 
 Notes
-Note 1: This repository includes the postman collection for the finished API
-Note 2: Application will run with docker-compose up -d --build command as it creates docker containers for both the .net core app & sqlserver-db.
-Note 3: Docker compose should work as expected. But incase it has issue, run the project without docker. 
-Note 4: NUnit to tests 
+- Note 1: This repository includes the postman collection for the finished API
+- Note 2: Application will run with docker-compose up -d --build command as it creates docker containers for both the .net core app & sqlserver-db.
+- Note 3: Docker compose should work as expected. But incase it has issue, run the project without docker. 
+- Note 4: NUnit to tests 
 
 ## Git clone
 Clone the repo and install the dependencies.
@@ -42,29 +42,29 @@ Services is a layer to bridge between Infrastucture and APIs. Also handles excep
 - [x] Identify the domains and separate db-infrastucture as per Clean Architecture
 - [x] Write Repositories and write related test cases
 - [x] Write Controller Api and write test cases for Game Api
-- [x] Add validatins and handle exceptions
+- [x] Add validations and handle exceptions
 - [x] Run solution on docker
 - [ ] Break down Identity and GameApi as separate microservices
 - [ ] Write Clients for microservices
 - [ ] Use dapr for service invocation and event handling
 
-The solution is not built with Microservice architechture, it could have been done if I had little bit more time.
+The solution is not built with Microservice architechture, even though I wish I could manage time to do it as well.
 
 ## Run the project
 
 ### DB setup
-Project is built as an application which is database independent. It is using entity-framework and it is easy to switch among db vendor whatever entity-framework supports that are of-course many of relational databases like SQL-Server, Postgres, MySql, SQLite etc.
+Project is built as an application which is database independent. It is using entity-framework and it is easy to switch among db vendors that is supported by entity-framework and they are relational databases like SQL-Server, Postgres, MySql, SQLite etc.
 I have tested with SQLite and SQLite. And primarily it is setup with SQLite. But you can easily test with SQL-Server by changing few configs. They are:
 - Add your SQL-Server ConnectionString at appsettings.json
 - Open Startup class, goto ConfigureServices method and uncomment `services.ConfigureSqlServer(Configuration)` and commented out `services.ConfigureSQLite(Configuration)`.
 - Remove existing Migration classes from GameOfChance.Ingrastructure project and run command `add-migration Init` on Package-Manager console.
 
-Sqlite db will be created at root folder when project is run for the first time and there is no database available initially.
+When testing with Sqlite db, it will be created at root folder when project is run for the first time and there is no database available initially.
 
 ### Postman collection
 The solution is provided with a Postman collection which included all the endpoints to test the api. Environment variable collection is also shared.
-- /api/auth/register to register a user as player
-- /api/auth/login to login a player, generated token is provided with the reponse. On postman token will be set at environment variable when user loggedin
-- /api/game/ - Post to play the bet
-- /api/game/:id - Get all the previous bets by the player-id
+- `/api/auth/register` to register a user as player
+- `/api/auth/login` to login a player, generated token is provided with the reponse. On postman token will be set at environment variable when user loggedin
+- `/api/game/` - Post to play the bet
+- `/api/game/:id` - Get all the previous bets by the player-id
 
