@@ -9,16 +9,16 @@ namespace GameOfChance.Api.Configuration
     {
         public static void ConfigureSqlServer(this IServiceCollection services, IConfiguration Configuration)
         {
-            // Configure Entityframecore with SQL SErver
+            // Configure Entityframework core with SQL Server
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
         }
 
-        public static void ConfigureSQLite(this IServiceCollection services, IConfiguration Configuration)
+        public static void ConfigureSqlite(this IServiceCollection services, IConfiguration Configuration)
         {
-            // Configure Entityframecore with SQL SErver
+            // Configure Entityframework core with Sqlite
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlite(Configuration.GetConnectionString("SqliteConnection"));
